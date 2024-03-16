@@ -4,7 +4,7 @@ const columns = alphas.length;
 
 const tableRows = rows * columns;
 
-const pieceNames = ["Piece 1", "Piece 2", "Piece 3", "Piece 4"];
+const pieceNames = ["All", "Piece 1", "Piece 2", "Piece 3", "Piece 4"];
 
 function getPieceDiv(id) {
     const div = document.createElement('div');
