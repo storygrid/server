@@ -1,9 +1,28 @@
 #mainTable {
     border-collapse: collapse;
+    width: 100%;
+    border: 3px solid black;
 }
 
 
-#mainTable th, #mainTable td {
+#mainTable th {
     border: 1px solid black;
     padding: 10px;
+    font-family: 'Calibri', sans-serif;
+    border-bottom: 3px solid black;
+}
+
+#mainTable td {
+    border: 1px solid black;
+    padding: 10px;
+    background-color: lightgray;
+    font-family: 'Calibri', sans-serif;
+}
+
+#mainTable tr:nth-child(4n) {
+    border-bottom: 3px solid black;
+}
+
+#header {
+    font-family: 'Calibri', sans-serif;
 }
