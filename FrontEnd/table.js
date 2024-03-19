@@ -4,23 +4,56 @@ const columns = alphas.length;
 
 const tableRows = rows * columns;
 
-const pieceNames = ["All", "Piece 1", "Piece 2", "Piece 3", "Piece 4"];
+const pieceData =
+    [
+        {value: 'all', label: 'All Pieces'},
+        {value: '1', label: 'Pieces 1'},
+        {value: '2', label: 'Pieces 2'},
+        {value: '3', label: 'Pieces 3'},
+        {value: '4', label: 'Pieces 4'}
+    ];
 
-function getPieceDiv(id) {
-    const div = document.createElement('div');
-    const selectElement = document.createElement('select');
-    let pieceId = 1;
-    for (const pieceName of pieceNames) {
-        const optionElement = document.createElement('option');
-        optionElement.value = pieceId.toString();
-        optionElement.textContent = pieceName;
-        selectElement.appendChild(optionElement);
-        pieceId += 1;
-    }
+function getCheckboxesDiv(id) {
+    const $div = $('<div class="pieces-checkboxes"></div>').attr('id', 'checkboxes_' + id);
 
-    div.appendChild(selectElement);
-    div.id = id;
-    return div;
+    $.each(pieceData, function (index, piece) {
+
+        // Create the checkbox elements
+        const boxId = 'checkbox_' + id + '_' + piece.value;
+        const $checkbox = $('<input>', {
+            type: 'checkbox',
+            id: boxId,
+            value: piece.value,
+            class: piece.value === 'all' ? 'all' : 'single',
+            checked: piece.value === 'all',
+            disabled: piece.value !== 'all',
+        });
+
+        const $label = $('<label>', {
+            for: boxId,
+            text: piece.label
+        });
+
+        // Handle selection
+        $checkbox.change(function () {
+            // all is selected
+            if ($(this).hasClass('all')) {
+                if (this.checked) {
+                    $('.single', $div).prop('checked', false).prop('disabled', true);
+                } else {
+                    $('.single', $div).prop('disabled', false);
+                }
+            }
+            // Individual piece selected
+            else {
+                $('.all', $div).prop('checked', false).prop('disabled', false);
+            }
+        });
+
+        $div.append($checkbox).append($label).append('<br>');
+    });
+
+    return $div;
 }
 
 function getActionDiv(id) {
@@ -41,14 +74,13 @@ function fillRows() {
     for (let r = 1; r < rows + 1; r++) {
         for (const alpha of alphas) {
             const row = body.insertRow();
-
             const pos = row.insertCell(0);
             const piece = row.insertCell(1);
             const action = row.insertCell(2);
 
             const id = alpha + r.toString();
             pos.textContent = id;
-            piece.appendChild(getPieceDiv(id));
+            piece.appendChild(getCheckboxesDiv(id).get(0));
             action.appendChild(getActionDiv(id));
         }
     }

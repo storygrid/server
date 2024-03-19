@@ -8,7 +8,6 @@
     font-family: Roboto, sans-serif;
 }
 
-
 #mainTable th {
     padding: 10px;
     background-color: #9AA0A6;
@@ -46,6 +45,11 @@
 #bodyDiv {
     background-color: #F1F1F1;
     margin: 0;
+}
+
+.pieces-checkboxes{
+    text-align: left;
+    padding-left: 30%;
 }
 
 .roboto-regular, #mainTable td, select {
