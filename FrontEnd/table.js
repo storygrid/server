@@ -13,6 +13,27 @@ const pieceData =
         {value: '4', label: 'Pieces 4'}
     ];
 
+const backendURL = 'http://127.0.0.1:5000'
+
+class Cell {
+    constructor(piece) {
+        this.piece = piece;
+        this.actions = []
+    }
+
+    addAction(action) {
+        this.actions.push(action)
+    }
+
+    getPlainObject() {
+        return {
+            piece: this.piece,
+            actions: this.actions
+        };
+    }
+}
+
+
 function getCheckboxesDiv(id) {
     const $div = $('<div class="pieces-checkboxes"></div>').attr('id', 'checkboxes_' + id);
 
@@ -85,5 +106,47 @@ function fillRows() {
         }
     }
 }
+
+$(document).ready(function () {
+    $('#submitButton').click(function () {
+        // Data to send to backend
+        let data = {}
+        $('#mainTable tbody tr').each(function () {
+            const row = $(this);
+            const position = row.find('td:eq(0)').text();
+
+            data[position] = [];
+
+            // Parse checkboxes
+            const checkboxes = row.find('td:eq(1) input[type=checkbox]:checked');
+            checkboxes.each(function () {
+                const checkbox = $(this);
+
+                // Create new cell
+                let cell = new Cell(checkbox.val());
+
+                // If checked then check the action
+                if (checkbox.prop('checked')) {
+                    cell.addAction("Audio");
+                }
+                data[position].push(cell.getPlainObject());
+            });
+        });
+
+        // Send data to backend
+        $.ajax({
+            url: backendURL + '/load',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (response) {
+                console.log('Response from backend:', response);
+            },
+            error: function (error) {
+                console.error('Error sending data:', error);
+            }
+        });
+    });
+});
 
 document.addEventListener('DOMContentLoaded', fillRows);

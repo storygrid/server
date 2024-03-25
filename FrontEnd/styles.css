@@ -38,7 +38,7 @@
     color: white;
 }
 
-#tableDiv{
+#tableDiv {
     padding: 30px;
 }
 
@@ -47,12 +47,30 @@
     margin: 0;
 }
 
-.pieces-checkboxes{
+#submitButton {
+    background-color: #4285F4;
+    color: white;
+    padding: 20px 40px;
+    border: none;
+    border-radius: 5px;
+    font-size: 20px;
+    float: right;
+}
+
+#submitButton:hover {
+    background-color: #5491f5;
+}
+
+#submitButtonDiv {
+    margin: 10px 30px 100px;
+}
+
+.pieces-checkboxes {
     text-align: left;
     padding-left: 30%;
 }
 
-.roboto-regular, #mainTable td, select {
+.roboto-regular, #mainTable td, select, #submitButton {
     font-family: "Roboto", sans-serif;
     font-weight: 400;
     font-style: normal;
