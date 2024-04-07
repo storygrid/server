@@ -89,21 +89,23 @@ function getActionDiv(id) {
 }
 
 function fillRows() {
-    const table = document.getElementById("mainTable")
-    const body = table.getElementsByTagName('tbody')[0]
+    const $body = $('#mainTable tbody');
 
-    for (let r = 1; r < rows + 1; r++) {
-        for (const alpha of alphas) {
-            const row = body.insertRow();
-            const pos = row.insertCell(0);
-            const piece = row.insertCell(1);
-            const action = row.insertCell(2);
+    for (let col = 1; col < 5; col++) {
+        const $row = $('<tr></tr>');
+        const $rowHeader = $('<th scope="row"></th>').text(col);
 
-            const id = alpha + r.toString();
-            pos.textContent = id;
-            piece.appendChild(getCheckboxesDiv(id).get(0));
-            action.appendChild(getActionDiv(id));
+        // Header
+        $row.append($rowHeader);
+
+        // Cell Div
+        for (let j = 0; j < 4; j++) {
+            const $cell = $('<td></td>');
+            const $cellDiv = $('<div class="cellDiv"></div>')
+            $cell.append($cellDiv);
+            $row.append($cell);
         }
+        $body.append($row);
     }
 }
 

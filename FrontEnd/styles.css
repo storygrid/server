@@ -1,7 +1,6 @@
 #mainTable {
     border-collapse: collapse;
     border-spacing: 0;
-    width: 100%;
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
     border-radius: 10px;
     overflow: hidden;
@@ -16,7 +15,7 @@
 
 #mainTable td {
     padding: 10px;
-    border-bottom: 1px solid lightgray;
+    border: 1px solid lightgray;
     text-align: center;
 }
 
@@ -63,6 +62,13 @@
 
 #submitButtonDiv {
     margin: 10px 30px 100px;
+}
+
+.cellDiv {
+    width: 250px;
+    height: 250px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .pieces-checkboxes {
