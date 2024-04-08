@@ -52,11 +52,10 @@
 #submitButton {
     background-color: #4285F4;
     color: white;
-    padding: 20px 40px;
+    padding: 40px 200px;
     border: none;
     border-radius: 5px;
-    font-size: 20px;
-    float: right;
+    font-size: 30px;
 }
 
 #submitButton:hover {
@@ -64,7 +63,9 @@
 }
 
 #submitButtonDiv {
-    margin: 10px 30px 100px;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 50px;
 }
 
 .cellDiv {
