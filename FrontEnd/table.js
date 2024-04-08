@@ -1,7 +1,7 @@
 const rows = 4;
 const alphas = ['A', 'B', 'C', 'D'];
 const columns = alphas.length;
-
+const players = ['P1', 'P2', 'P3', 'P4'];
 const tableRows = rows * columns;
 
 const pieceData =
@@ -34,58 +34,62 @@ class Cell {
 }
 
 
-function getCheckboxesDiv(id) {
-    const $div = $('<div class="pieces-checkboxes"></div>').attr('id', 'checkboxes_' + id);
-
-    $.each(pieceData, function (index, piece) {
-
-        // Create the checkbox elements
-        const boxId = 'checkbox_' + id + '_' + piece.value;
-        const $checkbox = $('<input>', {
-            type: 'checkbox',
-            id: boxId,
-            value: piece.value,
-            class: piece.value === 'all' ? 'all' : 'single',
-            checked: piece.value === 'all',
-            disabled: piece.value !== 'all',
-        });
-
-        const $label = $('<label>', {
-            for: boxId,
-            text: piece.label
-        });
-
-        // Handle selection
-        $checkbox.change(function () {
-            // all is selected
-            if ($(this).hasClass('all')) {
-                if (this.checked) {
-                    $('.single', $div).prop('checked', false).prop('disabled', true);
-                } else {
-                    $('.single', $div).prop('disabled', false);
-                }
-            }
-            // Individual piece selected
-            else {
-                $('.all', $div).prop('checked', false).prop('disabled', false);
-            }
-        });
-
-        $div.append($checkbox).append($label).append('<br>');
+function getActionDiv(id) {
+    const $div = $('<div class="audioDiv"></div>')
+    const $inputElement = $('<input>', {
+        type: 'file',
     });
+    $div.append($inputElement);
+    $div.id = "sound" + id;
 
     return $div;
 }
 
-function getActionDiv(id) {
-    const div = document.createElement('div');
-    const inputElement = document.createElement('input');
-    inputElement.type = "file";
+function appendCheckBox(id, $parentDiv) {
+    // Create the checkbox elements
+    const boxId = 'checkbox_' + id;
+    const $checkbox = $('<input>', {
+        type: 'checkbox',
+        id: boxId,
+        value: id,
+        checked: true,
+        class: "playerCheckbox",
+    });
 
-    div.appendChild(inputElement);
-    div.id = id;
+    const $label = $('<label>', {
+        for: boxId,
+        text: "Enable",
+    });
 
-    return div;
+    $parentDiv.append($checkbox).append($label);
+}
+
+function fillCellDiv(id, $parentDiv) {
+    let i = 0;
+    for (let row = 0; row < 2; row++) {
+        const $rowDiv = $('<div class="row"></div>');
+        for (let col = 0; col < 2; col++) {
+            const playerId = id + "_" + players[i];
+            const $playerDiv = $('<div class="player"></div>').addClass(players[i]);
+            $playerDiv.id = playerId; // IDs are in the format A1_P1
+
+            // Text
+            const $textDiv = $('<div class="playerText"></div>').text(players[i]);
+            $playerDiv.append($textDiv);
+
+            // Handle checkbox
+            const $checkboxDiv = $('<div class="playerCheckboxDiv"></div>');
+            appendCheckBox(playerId, $checkboxDiv);
+            $playerDiv.append($checkboxDiv);
+
+            // Get actions
+            $playerDiv.append(getActionDiv(playerId));
+            // Append to row
+            $rowDiv.append($playerDiv);
+            i += 1;
+        }
+        $parentDiv.append($rowDiv);
+    }
 }
 
 function fillRows() {
@@ -99,12 +103,14 @@ function fillRows() {
         $row.append($rowHeader);
 
         // Cell Div
-        for (let j = 0; j < 4; j++) {
+        $.each(alphas, function (_, alpha) {
             const $cell = $('<td></td>');
             const $cellDiv = $('<div class="cellDiv"></div>')
+            const id = alpha + col;
+            fillCellDiv(id, $cellDiv);
             $cell.append($cellDiv);
             $row.append($cell);
-        }
+        });
         $body.append($row);
     }
 }
