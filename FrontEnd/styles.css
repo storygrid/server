@@ -11,14 +11,15 @@
 
 #mainTable th {
     padding: 10px;
-    background-color: #9AA0A6;
+    background-color: #9E9E9E;
 }
 
 
 #mainTable td {
     padding: 10px;
-    border: 2px solid gray;
+    border: 2px solid #3C4043;
     text-align: center;
+    background-color: #EEEEEE;
 }
 
 #mainTable tr:nth-child(4n):not(:last-child) {
