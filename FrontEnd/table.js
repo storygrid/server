@@ -34,11 +34,19 @@ class Cell {
 }
 
 
-function getActionDiv(id) {
+function getAudioDiv(id) {
     const $div = $('<div class="audioDiv"></div>')
+    const $button = $('<button>', {
+        type: "button",
+        class: "audioUploadButton",
+        text: "Upload MP3",
+    })
     const $inputElement = $('<input>', {
         type: 'file',
+        class: 'audioInput',
+        accept: 'audio/mp3'
     });
+    $div.append($button);
     $div.append($inputElement);
     $div.id = "sound" + id;
 
@@ -83,7 +91,7 @@ function fillCellDiv(id, $parentDiv) {
             $playerDiv.append($checkboxDiv);
 
             // Get actions
-            $playerDiv.append(getActionDiv(playerId));
+            $playerDiv.append(getAudioDiv(playerId));
             // Append to row
             $rowDiv.append($playerDiv);
             i += 1;
@@ -154,6 +162,18 @@ $(document).ready(function () {
                 console.error('Error sending data:', error);
             }
         });
+    });
+});
+
+$(document).ready(function () {
+    $('#mainTable').on('click', '.audioUploadButton', function () {
+        $(this).next('.audioInput').click();
+    });
+
+    $('#mainTable').on('change', '.audioInput', function () {
+        const fileName = this.files[0] ? this.files[0].name : '';
+        const truncatedName = fileName.length > 15 ? fileName.substring(0, 12) + '...mp3' : fileName;
+        $(this).prev('.audioUploadButton').text(fileName ? `File: ${truncatedName}` : 'Upload MP3');
     });
 });
 

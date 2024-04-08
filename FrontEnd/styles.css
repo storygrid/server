@@ -5,6 +5,8 @@
     border-radius: 10px;
     overflow: hidden;
     font-family: Roboto, sans-serif;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #mainTable th {
@@ -15,7 +17,7 @@
 
 #mainTable td {
     padding: 10px;
-    border: 1px solid lightgray;
+    border: 2px solid gray;
     text-align: center;
 }
 
@@ -65,8 +67,8 @@
 }
 
 .cellDiv {
-    width: 400px;
-    height: 400px;
+    width: 300px;
+    height: 300px;
     display: flex;
     flex-wrap: wrap;
 }
@@ -82,7 +84,7 @@
     justify-content: center;
     align-items: center;
     width: calc(50% - 5px);
-    height: 190px;
+    height: 140px;
     border-radius: 10px;
 }
 
@@ -93,7 +95,7 @@
     font-weight: 500;
     font-style: normal;
     font-size: 24px;
-    padding-bottom: 20px;
+    padding-bottom: 10px;
 }
 
 .P1 {
@@ -118,7 +120,7 @@
     font-weight: 400;
     font-style: normal;
     color: white;
-    padding-bottom: 20px;
+    padding-bottom: 10px;
 }
 
 .playerCheckbox {
@@ -126,7 +128,27 @@
 }
 
 .audioDiv {
-    padding-left: 10px;
+
+}
+
+.audioUploadButton {
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    width: 80px;
+    height: 40px;
+    cursor: pointer;
+    background-color: white;
+    border-radius: 5px;
+    border: none;
+}
+
+.audioUploadButton:hover {
+    background-color: #9AA0A6;
+}
+
+.audioInput {
+    display: none;
 }
 
 .roboto-regular, #mainTable td, select, #submitButton {
