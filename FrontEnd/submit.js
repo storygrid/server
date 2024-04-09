@@ -12,7 +12,6 @@ $(document).ready(function () {
                 const id = $playerDiv.attr('id');
                 data[id] = [];
 
-                console.log(id);
                 // Create new cell
                 let cell = new Cell(id);
 
@@ -22,11 +21,9 @@ $(document).ready(function () {
                 }
 
                 data[id].push(cell.getPlainObject());
-                console.log(cell);
             })
         });
-
-        console.log(data);
+        
         // Send data to backend
         $.ajax({
             url: backendURL + '/load',
