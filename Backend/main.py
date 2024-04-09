@@ -12,8 +12,15 @@ columns = {'A', 'B', 'C', 'D'}
 
 @app.route("/load", methods=['POST'])
 def load():
-    data = request.json
-    print(data)
+
+    # Process other values
+    for key, value in request.form.items():
+        print(f"Processed data: [{key}, {value}]")
+
+    # Process files
+    for key, file in request.files.items():
+        print(f"Processed file: [{key}: {file.filename}]")
+
     return jsonify({'status': 'success', 'message': 'Data successfully loaded'})
 
 

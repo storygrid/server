@@ -1,18 +1,33 @@
 class Cell {
-    constructor(piece) {
-        this.piece = piece;
-        this.actions = []
+    constructor(id) {
+        this.id = id;
+        this.audio = null;
+        this.enabled = false;
     }
 
-    addAction(action) {
-        this.actions.push(action)
+
+    addAudio(audio) {
+        this.audio = audio;
     }
 
-    getPlainObject() {
-        return {
-            piece: this.piece,
-            actions: this.actions
-        };
+    setEnable(value) {
+        this.enabled = value;
+    }
+
+    isEnabled() {
+        return this.enabled;
+    }
+
+    hasAudio() {
+        return this.audio !== null;
+    }
+
+    getAudio() {
+        return this.audio;
+    }
+
+    getId() {
+        return this.id;
     }
 }
 
