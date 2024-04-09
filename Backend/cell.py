@@ -9,3 +9,9 @@ class Cell:
 
     def add_audio(self, player: str, audio):
         self.players[player].add_audio(audio)
+
+    def get_player(self, player: str):
+        if player in self.players:
+            return self.players[player]
+
+        return None

@@ -5,3 +5,6 @@ class Player:
 
     def add_audio(self, audio):
         self.audio = audio
+
+    def get_audio(self):
+        return self.audio

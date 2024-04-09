@@ -1,6 +1,10 @@
+import os
+
 from flask import Flask, request, jsonify
 from cell import Cell
 from flask_cors import CORS
+from werkzeug.utils import secure_filename
+from playsound import playsound
 
 app = Flask(__name__)
 CORS(app)
@@ -8,6 +12,8 @@ CORS(app)
 board = {}
 rows = {'1', '2', '3', '4'}
 columns = {'A', 'B', 'C', 'D'}
+
+AUDIO_FOLDER = 'audio'
 
 
 @app.route("/load", methods=['POST'])
@@ -24,10 +30,25 @@ def load():
         player_id = key.split("+")[0].split("_")[1]
 
         if action == "audio":
-            print(f"Processed audio file \"{file.filename}\" for [{board_cell_id}:{player_id}]")
-            board[board_cell_id].add_audio(player_id, file)
+            # Rename audio file
+            new_file_name = board_cell_id + "_" + player_id + ".mp3"
+
+            # Sanitize
+            filename = secure_filename(new_file_name)
+            filepath = os.path.join(AUDIO_FOLDER, filename)
+            file.save(filepath)
+
+            # Save reference
+            board[board_cell_id].add_audio(player_id, filepath)
+
+            print(f"Processed audio file: {new_file_name}")
 
     return jsonify({'status': 'success', 'message': 'Data successfully loaded'})
+
+
+def play_audio(board_cell_id, player_id):
+    file_path = board[board_cell_id].get_player(player_id).get_audio()
+    playsound(file_path)
 
 
 # Load the board state
