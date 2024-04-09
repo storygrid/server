@@ -3,8 +3,6 @@ const alphas = ['A', 'B', 'C', 'D'];
 const columns = alphas.length;
 const players = ['P1', 'P2', 'P3', 'P4'];
 
-const backendURL = 'http://127.0.0.1:5000'
-
 
 function getAudioDiv(id) {
     const $div = $('<div class="audioDiv"></div>')

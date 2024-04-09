@@ -1,5 +1,7 @@
 import {Cell} from "./cell.js";
 
+const backendURL = 'http://127.0.0.1:5000'
+
 $(document).ready(function () {
     $('#submitButton').click(function () {
         // Data to send to backend
@@ -23,7 +25,7 @@ $(document).ready(function () {
                 data[id].push(cell.getPlainObject());
             })
         });
-        
+
         // Send data to backend
         $.ajax({
             url: backendURL + '/load',
