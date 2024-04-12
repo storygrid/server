@@ -4,6 +4,7 @@ board_map = {'A': 'A1', 'B': 'B1', 'C': 'C1', 'D': 'D1',
              'I': 'A3', 'J': 'B3', 'K': 'C3', 'L': 'D3',
              'M': 'A4', 'N': 'B4', 'O': 'C4', 'P': 'D4'}
 
+# Map the physical piece to piece number
 piece_map = {'0': 'P1', '1': 'P2', '2': 'P3', '3': 'P4'}
 
 

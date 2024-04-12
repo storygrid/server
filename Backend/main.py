@@ -5,9 +5,7 @@ from cell import Cell
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 from playsound import playsound
-from board_data import BoardData
-import serial
-import threading
+from threadserial import ThreadSerial
 
 app = Flask(__name__)
 CORS(app)
@@ -19,6 +17,7 @@ columns = {'A', 'B', 'C', 'D'}
 AUDIO_FOLDER = 'audio'
 
 
+# Load POST request, receives data from front end
 @app.route("/load", methods=['POST'])
 def load():
     # Process other values
@@ -38,6 +37,8 @@ def load():
 
             # Sanitize
             filename = secure_filename(new_file_name)
+
+            # Save the file
             filepath = os.path.join(AUDIO_FOLDER, filename)
             file.save(filepath)
 
@@ -49,6 +50,7 @@ def load():
     return jsonify({'status': 'success', 'message': 'Data successfully loaded'})
 
 
+# Plays audio given the position and player
 def play_audio(board_cell_id, player_id):
     player = board[board_cell_id].get_player(player_id)
     file_path = player.get_audio()
@@ -58,35 +60,16 @@ def play_audio(board_cell_id, player_id):
             playsound(file_path)
 
 
-class ThreadSerial(threading.Thread):
-
-    def __init__(self, name):
-        threading.Thread.__init__(self)
-        self.name = name
-
-    def run(self):
-        print("Started Serial Thread.")
-        with serial.Serial(baudrate=9600, port='/dev/cu.usbmodem14301', timeout=10) as ser:
-            while True:
-                s = ser.readline()
-                data = str(s)[2:]
-                if data != "'":
-                    piece = data.split('@')[0].strip()
-                    pos = data.split('@')[1].strip()[0]
-                    status = data.split('-')[1].strip()[:-5]
-
-                    board_data = BoardData(piece, pos, status)
-                    if board_data.on_board:
-                        play_audio(board_data.pos, board_data.piece)
-
-
-# Load the board state
+# Runs when Flask app starts
 with app.app_context():
+    # Load the board state
     for row in rows:
         for column in columns:
             cell_id = column + row
             board[cell_id] = Cell(cell_id)
 
     print("Loaded Board!")
-    tserial = ThreadSerial("Serial Thread")
-    tserial.start()
+
+    # Launch the thread serial to read from USB port
+    t_serial = ThreadSerial("Serial Thread")
+    t_serial.start()
