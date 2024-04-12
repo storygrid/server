@@ -50,13 +50,12 @@ def load():
 
 
 def play_audio(board_cell_id, player_id):
-    print("Playing audio")
-    file_path = board[board_cell_id].get_player(player_id).get_audio()
-    print(board_cell_id)
-    print(player_id)
-    print(file_path)
-    if file_path is not None:
-        playsound(file_path)
+    player = board[board_cell_id].get_player(player_id)
+    file_path = player.get_audio()
+    if player.enabled:
+        print(f"Playing audio on {board_cell_id} for {player_id}")
+        if file_path is not None:
+            playsound(file_path)
 
 
 class ThreadSerial(threading.Thread):
@@ -66,6 +65,7 @@ class ThreadSerial(threading.Thread):
         self.name = name
 
     def run(self):
+        print("Started Serial Thread.")
         with serial.Serial(baudrate=9600, port='/dev/cu.usbmodem14301', timeout=10) as ser:
             while True:
                 s = ser.readline()
