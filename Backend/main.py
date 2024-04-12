@@ -5,6 +5,7 @@ from cell import Cell
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 from playsound import playsound
+from board_data import BoardData
 import serial
 import threading
 
@@ -14,12 +15,6 @@ CORS(app)
 board = {}
 rows = {'1', '2', '3', '4'}
 columns = {'A', 'B', 'C', 'D'}
-
-# Map the physical board to the grid
-board_map = {'A': 'A1', 'B': 'B1', 'C': 'C1', 'D': 'D1',
-             'E': 'A2', 'F': 'B2', 'G': 'C2', 'H': 'D2',
-             'I': 'A3', 'J': 'B3', 'K': 'C3', 'L': 'D3',
-             'M': 'A4', 'N': 'B4', 'O': 'C4', 'P': 'D4'}
 
 AUDIO_FOLDER = 'audio'
 
@@ -55,8 +50,13 @@ def load():
 
 
 def play_audio(board_cell_id, player_id):
+    print("Playing audio")
     file_path = board[board_cell_id].get_player(player_id).get_audio()
-    playsound(file_path)
+    print(board_cell_id)
+    print(player_id)
+    print(file_path)
+    if file_path is not None:
+        playsound(file_path)
 
 
 class ThreadSerial(threading.Thread):
@@ -70,12 +70,14 @@ class ThreadSerial(threading.Thread):
             while True:
                 s = ser.readline()
                 data = str(s)[2:]
-                piece = data.split('@')[0].strip()
-                pos = data.split('@')[1].strip()[0]
-                status = data.split('-')[1].strip()[:-5]
-                print(piece)
-                print(pos)
-                print(status)
+                if data != "'":
+                    piece = data.split('@')[0].strip()
+                    pos = data.split('@')[1].strip()[0]
+                    status = data.split('-')[1].strip()[:-5]
+
+                    board_data = BoardData(piece, pos, status)
+                    if board_data.on_board:
+                        play_audio(board_data.pos, board_data.piece)
 
 
 # Load the board state
