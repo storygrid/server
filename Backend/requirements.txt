@@ -161,5 +161,6 @@ pyobjc-framework-VideoToolbox==10.2
 pyobjc-framework-Virtualization==10.2
 pyobjc-framework-Vision==10.2
 pyobjc-framework-WebKit==10.2
+pyserial==3.5
 Werkzeug==3.0.1
 zipp==3.18.1
