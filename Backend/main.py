@@ -1,11 +1,13 @@
 import os
 
+import serial
 from flask import Flask, request, jsonify
 from cell import Cell
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 from playsound import playsound
-from threadserial import ThreadSerial
+from boarddata import BoardData
+import threading
 
 app = Flask(__name__)
 CORS(app)
@@ -15,6 +17,11 @@ rows = {'1', '2', '3', '4'}
 columns = {'A', 'B', 'C', 'D'}
 
 AUDIO_FOLDER = 'audio'
+
+# For reading from USB port
+PORT = '/dev/cu.usbmodem14301'
+BAUD = 9600
+TIMEOUT = 10
 
 
 # Load POST request, receives data from front end
@@ -58,6 +65,35 @@ def play_audio(board_cell_id, player_id):
         print(f"Playing audio on {board_cell_id} for {player_id}")
         if file_path is not None:
             playsound(file_path)
+
+
+class ThreadSerial(threading.Thread):
+
+    def __init__(self, name):
+        threading.Thread.__init__(self)
+        self.name = name
+
+    def run(self):
+        print("Started Serial Thread.")
+        with serial.Serial(baudrate=BAUD, port=PORT, timeout=TIMEOUT) as ser:
+            while True:
+                s = ser.readline()
+
+                # Data: "0 @ A - UP"
+                # <Piece #> @ <Cell> - <UP/DOWN>
+                data = str(s)[2:]
+
+                # Occasionally arduino produces ', so do not parse
+                if data != "'":
+                    # Parse the string
+                    piece = data.split('@')[0].strip()
+                    pos = data.split('@')[1].strip()[0]
+                    status = data.split('-')[1].strip()[:-5]
+
+                    # Convert to BoardData object which will handle the translations
+                    board_data = BoardData(piece, pos, status)
+                    if board_data.on_board:
+                        play_audio(board_data.pos, board_data.piece)
 
 
 # Runs when Flask app starts

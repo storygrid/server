@@ -2,20 +2,10 @@ class Cell {
     constructor(id) {
         this.id = id;
         this.audio = null;
-        this.enabled = false;
     }
-
 
     addAudio(audio) {
         this.audio = audio;
-    }
-
-    setEnable(value) {
-        this.enabled = value;
-    }
-
-    isEnabled() {
-        return this.enabled;
     }
 
     hasAudio() {

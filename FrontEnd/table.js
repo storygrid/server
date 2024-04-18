@@ -23,25 +23,6 @@ function getAudioDiv(id) {
     return $div;
 }
 
-function appendCheckBox(id, $parentDiv) {
-    // Create the checkbox elements
-    const boxId = 'checkbox_' + id;
-    const $checkbox = $('<input>', {
-        type: 'checkbox',
-        id: boxId,
-        value: id,
-        checked: true,
-        class: "playerCheckbox",
-    });
-
-    const $label = $('<label>', {
-        for: boxId,
-        text: "Enable",
-    });
-
-    $parentDiv.append($checkbox).append($label);
-}
-
 function fillCellDiv(id, $parentDiv) {
     let i = 0;
     for (let row = 0; row < 2; row++) {
@@ -54,11 +35,6 @@ function fillCellDiv(id, $parentDiv) {
             // Text
             const $textDiv = $('<div class="playerText"></div>').text(players[i]);
             $playerDiv.append($textDiv);
-
-            // Handle checkbox
-            const $checkboxDiv = $('<div class="playerCheckboxDiv"></div>');
-            appendCheckBox(playerId, $checkboxDiv);
-            $playerDiv.append($checkboxDiv);
 
             // Get actions
             $playerDiv.append(getAudioDiv(playerId));

@@ -6,11 +6,9 @@ function loadBackend(data) {
     let formData = new FormData();
 
     for (const cell of data) {
-        if (cell.isEnabled()) {
-            if (cell.hasAudio()) {
-                const key = cell.getId() + "+audio";
-                formData.append(key, cell.getAudio());
-            }
+        if (cell.hasAudio()) {
+            const key = cell.getId() + "+audio";
+            formData.append(key, cell.getAudio());
         }
     }
 
@@ -48,12 +46,6 @@ $(document).ready(function () {
                 if (audioInput && audioInput.files.length > 0) {
                     const file = audioInput.files[0];
                     cell.addAudio(file);
-                }
-
-
-                const checkbox = $playerDiv.find('.playerCheckbox');
-                if (checkbox.prop('checked')) {
-                    cell.setEnable(true);
                 }
 
                 data.push(cell);
