@@ -78,6 +78,9 @@ $(document).ready(function () {
         const fileName = this.files[0] ? this.files[0].name : '';
         const truncatedName = fileName.length > 15 ? fileName.substring(0, 12) + '...mp3' : fileName;
         $(this).prev('.audioUploadButton').text(fileName ? `File: ${truncatedName}` : 'Upload MP3');
+
+        // Change the player opacity
+        $(this).closest('.player').toggleClass('hasAudio', this.files.length > 0);
     });
 });
 
