@@ -2,8 +2,9 @@ import os
 import serial
 import serial.tools.list_ports
 import threading
+import webbrowser
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from cell import Cell
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
@@ -93,13 +94,27 @@ class ThreadSerial(threading.Thread):
                     status = data.split('-')[1].strip()[:-5]
 
                     # Convert to BoardData object which will handle the translations
-                    board_data = BoardData(piece, pos, status)
-                    if board_data.on_board:
-                        play_audio(board_data.pos, board_data.piece)
+                    if piece != '-1':
+                        print(f"{piece} has been placed.")
+                        board_data = BoardData(piece, pos, status)
+                        if board_data.on_board:
+                            play_audio(board_data.pos, board_data.piece)
+                    else:
+                        print("Piece has not been scanned!")
+
+
+def open_browser():
+    webbrowser.open_new('http://127.0.0.1:5500')
+
+
+@app.route('/')
+def home():
+    return render_template('index.html')
 
 
 # Runs when Flask app starts
-with app.app_context():
+if __name__ == '__main__':
+
     # Load the board state
     for row in rows:
         for column in columns:
@@ -107,6 +122,8 @@ with app.app_context():
             board[cell_id] = Cell(cell_id)
 
     print("Loaded Board!")
+    # Open the Web Page
+    threading.Timer(1.25, open_browser).start()
 
     for port, desc, hwid in serial.tools.list_ports.comports():
         if VID in hwid:
@@ -115,9 +132,13 @@ with app.app_context():
             PORT = port
 
     if PORT is None:
-        print("Arduino not found. Exiting application.")
-        exit(1)
+        print("ERROR: Arduino Not Found!")
+    else:
+        # Launch the thread serial to read from USB port
+        t_serial = ThreadSerial("Serial Thread")
+        t_serial.start()
 
-    # Launch the thread serial to read from USB port
-    t_serial = ThreadSerial("Serial Thread")
-    t_serial.start()
+    try:
+        app.run(port=5500)
+    except Exception as e:
+        print(f"Error starting Flask app: {e}")
