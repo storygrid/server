@@ -95,7 +95,10 @@ class ThreadSerial(threading.Thread):
 
                     # Convert to BoardData object which will handle the translations
                     if piece != '-1':
-                        print(f"{piece} has been placed.")
+                        if status == 'DOWN':
+                            print(f"{piece} has been placed.")
+                        else:
+                            print(f"{piece} has been lifted.")
                         board_data = BoardData(piece, pos, status)
                         if board_data.on_board:
                             play_audio(board_data.pos, board_data.piece)
