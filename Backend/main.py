@@ -7,6 +7,8 @@ from flask_cors import CORS
 from werkzeug.utils import secure_filename
 from playsound import playsound
 from boarddata import BoardData
+import serial
+import serial.tools.list_ports
 import threading
 
 app = Flask(__name__)
@@ -19,7 +21,8 @@ columns = {'A', 'B', 'C', 'D'}
 AUDIO_FOLDER = 'audio'
 
 # For reading from USB port
-PORT = '/dev/cu.usbmodem14301'
+VID = "PID=2341"  # Vendor ID for Arduino
+PORT = None
 BAUD = 9600
 TIMEOUT = 10
 
@@ -105,6 +108,16 @@ with app.app_context():
             board[cell_id] = Cell(cell_id)
 
     print("Loaded Board!")
+
+    for port, desc, hwid in serial.tools.list_ports.comports():
+        if VID in hwid:
+            print(f"Found Arduino Device.")
+            print(f"Port set to {port}.")
+            PORT = port
+
+    if PORT is None:
+        print("Arduino not found. Exiting application.")
+        exit(1)
 
     # Launch the thread serial to read from USB port
     t_serial = ThreadSerial("Serial Thread")
