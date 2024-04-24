@@ -1,15 +1,14 @@
 import os
-
 import serial
+import serial.tools.list_ports
+import threading
+
 from flask import Flask, request, jsonify
 from cell import Cell
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 from playsound import playsound
 from boarddata import BoardData
-import serial
-import serial.tools.list_ports
-import threading
 
 app = Flask(__name__)
 CORS(app)
