@@ -162,4 +162,4 @@ cython_debug/
 .DS_Store
 
 # Ignore all the audio uploads
-Backend/audio/*
+audio/*
