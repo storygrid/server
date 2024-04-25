@@ -3,6 +3,7 @@ import serial
 import serial.tools.list_ports
 import threading
 import webbrowser
+import sys
 
 from flask import Flask, request, jsonify, render_template
 from cell import Cell
@@ -18,7 +19,7 @@ board = {}
 rows = {'1', '2', '3', '4'}
 columns = {'A', 'B', 'C', 'D'}
 
-AUDIO_FOLDER = 'audio'
+AUDIO_FOLDER = ''
 
 # For reading from USB port
 VID = "PID=2341"  # Vendor ID for Arduino
@@ -50,6 +51,7 @@ def load():
 
             # Save the file
             filepath = os.path.join(AUDIO_FOLDER, filename)
+            print(f"Saving {filename} to {filepath}.")
             file.save(filepath)
 
             # Save reference
@@ -115,9 +117,21 @@ def home():
     return render_template('index.html')
 
 
+def setup_dir():
+    global AUDIO_FOLDER
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+
+    # Is it running as exe
+    if getattr(sys, 'frozen', False):
+        base_dir = os.path.dirname(sys.executable)
+
+    AUDIO_FOLDER = os.path.join(base_dir, 'audio')
+    os.makedirs(AUDIO_FOLDER, exist_ok=True)
+
+
 # Runs when Flask app starts
 if __name__ == '__main__':
-
+    setup_dir()
     # Load the board state
     for row in rows:
         for column in columns:
