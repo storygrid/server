@@ -16,6 +16,11 @@ class Player:
     def get_audio_file(self):
         return self.audio_file
 
+    def remove_audio_file(self):
+        self.audio_file = None
+        self.audio_path = None
+        self.enabled = False
+
     def disable(self):
         self.enabled = False
 

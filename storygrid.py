@@ -91,6 +91,7 @@ def delete_file(full_id):
 
         # Delete
         os.remove(file_to_delete)
+        board[cell_id].get_player(player_id).remove_audio_file()
         return jsonify({"status": "success", "message": f"Removed {file_to_delete}."}), 200
 
     except OSError as e:
