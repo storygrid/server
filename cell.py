@@ -7,8 +7,8 @@ class Cell:
         # Initialize 4 players
         self.players = {"P1": Player("P1"), "P2": Player("P2"), "P3": Player("P3"), "P4": Player("P4")}
 
-    def add_audio(self, player: str, audio):
-        self.players[player].add_audio(audio)
+    def add_audio(self, player: str, audio, file_name):
+        self.players[player].add_audio(audio, file_name)
 
     def get_player(self, player: str):
         if player in self.players:

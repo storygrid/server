@@ -1,15 +1,20 @@
 class Player:
     def __init__(self, player_id):
         self.player_id = player_id
-        self.audio = None
+        self.audio_path = None
         self.enabled = False
+        self.audio_file = None
 
-    def add_audio(self, audio):
+    def add_audio(self, audio_path, file_name):
         self.enable()
-        self.audio = audio
+        self.audio_path = audio_path
+        self.audio_file = file_name
 
     def get_audio(self):
-        return self.audio
+        return self.audio_path
+
+    def get_audio_file(self):
+        return self.audio_file
 
     def disable(self):
         self.enabled = False

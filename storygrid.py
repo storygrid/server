@@ -77,6 +77,25 @@ def home():
     return render_template('index.html')
 
 
+# Load any existing file information
+@app.route("/setup", methods=['GET'])
+def setup():
+    data = {}
+    players = ['P1', 'P2', 'P3', 'P4']
+    cells = ['A1', 'A2', 'A3', 'A4',
+             'B1', 'B2', 'B3', 'B4',
+             'C1', 'C2', 'C3', 'C4',
+             'D1', 'D2', 'D3', 'D4']
+
+    for cell in cells:
+        data[cell] = {}
+        for player in players:
+            if board[cell].get_player(player).enabled:
+                data[cell][player] = board[cell].get_player(player).get_audio_file()
+
+    return jsonify(data)
+
+
 # Plays audio given the position and player
 def play_audio(board_cell_id, player_id):
     player = board[board_cell_id].get_player(player_id)

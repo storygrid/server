@@ -48,4 +48,4 @@ def load_board(board, audio_folder):
 
             board_cell_id = parent_directory.split('_')[0]
             player_id = parent_directory.split('_')[1]
-            board[board_cell_id].add_audio(player_id, file_path)
+            board[board_cell_id].add_audio(player_id, file_path, files[0])
