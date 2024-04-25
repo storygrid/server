@@ -43,23 +43,37 @@ def load():
         player_id = key.split("+")[0].split("_")[1]
 
         if action == "audio":
-            # Rename audio file
-            new_file_name = board_cell_id + "_" + player_id + ".mp3"
-
             # Sanitize
-            filename = secure_filename(new_file_name)
+            filename = secure_filename(file.filename)
 
             # Save the file
-            filepath = os.path.join(AUDIO_FOLDER, filename)
-            print(f"Saving {filename} to {filepath}.")
+            folder = os.path.join(AUDIO_FOLDER, board_cell_id + "_" + player_id)
+            filepath = os.path.join(folder, filename)
+            print(f"Saving {file.filename} to {filepath}.")
             file.save(filepath)
 
             # Save reference
             board[board_cell_id].add_audio(player_id, filepath)
 
-            print(f"Processed audio file: {new_file_name}")
+            print(f"Processed audio file: {file.filename}")
 
     return jsonify({'status': 'success', 'message': 'Data successfully loaded'})
+
+
+@app.route("/play", methods=['GET'])
+def play():
+    cell = request.args.get('cell')
+    player = request.args.get('player')
+
+    if cell is None or player is None:
+        return "Missing parameters", 400
+
+    if not board[cell].get_player(player).enabled:
+        return "Player disabled", 400
+
+    play_audio(cell, player)
+
+    return f"Audio requested for board cell {cell} and player {player}"
 
 
 # Plays audio given the position and player
@@ -67,7 +81,7 @@ def play_audio(board_cell_id, player_id):
     player = board[board_cell_id].get_player(player_id)
     file_path = player.get_audio()
     if player.enabled:
-        print(f"Playing audio on {board_cell_id} for {player_id}")
+        print(f"Playing audio on {board_cell_id} for {player_id} from {file_path}.")
         if file_path is not None:
             playsound(file_path)
 
@@ -128,15 +142,40 @@ def setup_dir():
     AUDIO_FOLDER = os.path.join(base_dir, 'audio')
     os.makedirs(AUDIO_FOLDER, exist_ok=True)
 
+    # Make folder for each audio file
+    alphas = ['A', 'B', 'C', 'D']
+    players = ['P1', 'P2', 'P3', 'P4']
+    for i in range(1, 5):
+        for alpha in alphas:
+            for player in players:
+                name = alpha + str(i) + '_' + player
+                new_folder = os.path.join(AUDIO_FOLDER, name)
+                os.makedirs(new_folder, exist_ok=True)
+
+
+def load_board():
+    for row in rows:
+        for column in columns:
+            cell_id = column + row
+            board[cell_id] = Cell(cell_id)
+
+    global AUDIO_FOLDER
+    for root, dirs, files in os.walk(AUDIO_FOLDER, topdown=True):
+        if len(files) > 0:
+            file_path = os.path.join(root, files[0])
+            parent_directory = os.path.basename(os.path.dirname(file_path))
+            print(f"Loaded existing file: {file_path}")
+
+            board_cell_id = parent_directory.split('_')[0]
+            player_id = parent_directory.split('_')[1]
+            board[board_cell_id].add_audio(player_id, file_path)
+
 
 # Runs when Flask app starts
 if __name__ == '__main__':
     setup_dir()
     # Load the board state
-    for row in rows:
-        for column in columns:
-            cell_id = column + row
-            board[cell_id] = Cell(cell_id)
+    load_board()
 
     print("Loaded Board!")
     # Open the Web Page
