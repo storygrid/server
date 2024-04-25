@@ -49,7 +49,7 @@ def load():
             file.save(filepath)
 
             # Save reference
-            board[board_cell_id].add_audio(player_id, filepath)
+            board[board_cell_id].add_audio(player_id, filepath, filename)
 
             print(f"Processed audio file: {file.filename}")
 
