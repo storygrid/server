@@ -2,7 +2,12 @@ const rows = 4;
 const alphas = ['A', 'B', 'C', 'D'];
 const columns = alphas.length;
 const players = ['P1', 'P2', 'P3', 'P4'];
+const backendURL = 'http://127.0.0.1:5500'
+let data = {}
 
+function truncate(name) {
+    return name.length > 15 ? name.substring(0, 12) + '...mp3' : name;
+}
 
 function getAudioDiv(id) {
     const $div = $('<div class="audioDiv"></div>')
@@ -38,12 +43,35 @@ function fillCellDiv(id, $parentDiv) {
 
             // Get actions
             $playerDiv.append(getAudioDiv(playerId));
+
+            // Check existing
+            if (id in data && players[i] in data[id]) {
+                $playerDiv.toggleClass('hasAudio');
+                $playerDiv.find('.audioDiv').find('.audioUploadButton').text(truncate(data[id][players[i]]));
+            }
             // Append to row
             $rowDiv.append($playerDiv);
             i += 1;
         }
         $parentDiv.append($rowDiv);
     }
+}
+
+function setup(callback) {
+    $.ajax({
+        url: backendURL + '/setup',
+        method: 'GET',
+        dataType: 'json',
+        success: function (response) {
+            data = response;
+            if (typeof callback === 'function') {
+                callback();
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.error('Error fetching data:', textStatus, errorThrown);
+        }
+    });
 }
 
 function fillRows() {
@@ -76,12 +104,11 @@ $(document).ready(function () {
 
     $('#mainTable').on('change', '.audioInput', function () {
         const fileName = this.files[0] ? this.files[0].name : '';
-        const truncatedName = fileName.length > 15 ? fileName.substring(0, 12) + '...mp3' : fileName;
-        $(this).prev('.audioUploadButton').text(fileName ? `File: ${truncatedName}` : 'Upload MP3');
+        $(this).prev('.audioUploadButton').text(fileName ? `File: ${truncate(fileName)}` : 'Upload MP3');
 
         // Change the player opacity
         $(this).closest('.player').toggleClass('hasAudio', this.files.length > 0);
     });
 });
 
-document.addEventListener('DOMContentLoaded', fillRows);
+document.addEventListener('DOMContentLoaded', setup(fillRows));
