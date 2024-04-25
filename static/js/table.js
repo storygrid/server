@@ -16,13 +16,20 @@ function getAudioDiv(id) {
         class: "audioUploadButton",
         text: "Upload MP3",
     })
+
     const $inputElement = $('<input>', {
         type: 'file',
         class: 'audioInput',
         accept: 'audio/mp3'
     });
-    $div.append($button);
-    $div.append($inputElement);
+
+    const $deleteButton = $('<button>', {
+        type: "button",
+        class: "audioDeleteButton",
+        text: "X",
+    });
+
+    $div.append($button, $inputElement, $deleteButton);
     $div.id = "sound" + id;
 
     return $div;
@@ -108,6 +115,32 @@ $(document).ready(function () {
 
         // Change the player opacity
         $(this).closest('.player').toggleClass('hasAudio', this.files.length > 0);
+    });
+
+
+    $('#mainTable').on('click', '.audioDeleteButton', function () {
+        const $audioDiv = $(this).closest('.audioDiv');
+        const $input = $audioDiv.find('.audioInput');
+        const $uploadButton = $audioDiv.find('.audioUploadButton');
+
+        $input.val('');
+        $uploadButton.text('Upload MP3');
+        $audioDiv.closest('.player').removeClass('hasAudio');
+
+        const file_id = $audioDiv.closest('.player').attr('id');
+        console.log(file_id)
+
+        // Backend call
+        $.ajax({
+            url: backendURL + '/delete/' + file_id,
+            type: 'DELETE',
+            success: function (response) {
+                console.log('File deleted successfully:', response);
+            },
+            error: function (xhr, status, error) {
+                console.error('Failed to delete file:', status, error);
+            }
+        });
     });
 });
 
