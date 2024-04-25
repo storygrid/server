@@ -77,6 +77,29 @@ def home():
     return render_template('index.html')
 
 
+@app.route('/delete/<full_id>', methods=['DELETE'])
+def delete_file(full_id):
+    cell_id = full_id.split("_")[0]
+    player_id = full_id.split("_")[1]
+    folder_path = os.path.join(AUDIO_FOLDER, cell_id + "_" + player_id)
+
+    try:
+        files = os.listdir(folder_path)
+        if not files:
+            return jsonify({"status": "error", "message": "No file found to delete."}), 404
+        file_to_delete = os.path.join(folder_path, files[0])
+
+        # Delete
+        os.remove(file_to_delete)
+        return jsonify({"status": "success", "message": f"Removed {file_to_delete}."}), 200
+
+    except OSError as e:
+        return jsonify({"status": "error", "message": f"Failed to delete file: {str(e)}"}), 500
+
+    except Exception as e:
+        return jsonify({"status": "error", "message": f"Error processing delete request: {str(e)}"}), 500
+
+
 # Load any existing file information
 @app.route("/setup", methods=['GET'])
 def setup():
