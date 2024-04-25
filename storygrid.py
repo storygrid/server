@@ -2,22 +2,18 @@ import os
 import serial
 import serial.tools.list_ports
 import threading
-import webbrowser
-import sys
 
 from flask import Flask, request, jsonify, render_template
-from cell import Cell
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 from playsound import playsound
 from boarddata import BoardData
+from setup import load_board, open_browser, setup_dir
 
 app = Flask(__name__)
 CORS(app)
 
 board = {}
-rows = {'1', '2', '3', '4'}
-columns = {'A', 'B', 'C', 'D'}
 
 AUDIO_FOLDER = ''
 
@@ -76,6 +72,11 @@ def play():
     return f"Audio requested for board cell {cell} and player {player}"
 
 
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+
 # Plays audio given the position and player
 def play_audio(board_cell_id, player_id):
     player = board[board_cell_id].get_player(player_id)
@@ -122,60 +123,11 @@ class ThreadSerial(threading.Thread):
                         print("Piece has not been scanned!")
 
 
-def open_browser():
-    webbrowser.open_new('http://127.0.0.1:5500')
-
-
-@app.route('/')
-def home():
-    return render_template('index.html')
-
-
-def setup_dir():
-    global AUDIO_FOLDER
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-
-    # Is it running as exe
-    if getattr(sys, 'frozen', False):
-        base_dir = os.path.dirname(sys.executable)
-
-    AUDIO_FOLDER = os.path.join(base_dir, 'audio')
-    os.makedirs(AUDIO_FOLDER, exist_ok=True)
-
-    # Make folder for each audio file
-    alphas = ['A', 'B', 'C', 'D']
-    players = ['P1', 'P2', 'P3', 'P4']
-    for i in range(1, 5):
-        for alpha in alphas:
-            for player in players:
-                name = alpha + str(i) + '_' + player
-                new_folder = os.path.join(AUDIO_FOLDER, name)
-                os.makedirs(new_folder, exist_ok=True)
-
-
-def load_board():
-    for row in rows:
-        for column in columns:
-            cell_id = column + row
-            board[cell_id] = Cell(cell_id)
-
-    global AUDIO_FOLDER
-    for root, dirs, files in os.walk(AUDIO_FOLDER, topdown=True):
-        if len(files) > 0:
-            file_path = os.path.join(root, files[0])
-            parent_directory = os.path.basename(os.path.dirname(file_path))
-            print(f"Loaded existing file: {file_path}")
-
-            board_cell_id = parent_directory.split('_')[0]
-            player_id = parent_directory.split('_')[1]
-            board[board_cell_id].add_audio(player_id, file_path)
-
-
 # Runs when Flask app starts
 if __name__ == '__main__':
-    setup_dir()
-    # Load the board state
-    load_board()
+    AUDIO_FOLDER = setup_dir(AUDIO_FOLDER)
+
+    load_board(board, AUDIO_FOLDER)
 
     print("Loaded Board!")
     # Open the Web Page
