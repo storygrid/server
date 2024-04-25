@@ -11,7 +11,7 @@ def open_browser():
     webbrowser.open_new('http://127.0.0.1:5500')
 
 
-def setup_dir(audio_folder) -> str:
+def setup_dir() -> str:
     base_dir = os.path.dirname(os.path.abspath(__file__))
 
     # Is it running as exe

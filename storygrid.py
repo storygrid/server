@@ -125,7 +125,7 @@ class ThreadSerial(threading.Thread):
 
 # Runs when Flask app starts
 if __name__ == '__main__':
-    AUDIO_FOLDER = setup_dir(AUDIO_FOLDER)
+    AUDIO_FOLDER = setup_dir()
 
     load_board(board, AUDIO_FOLDER)
 
