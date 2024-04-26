@@ -41,11 +41,15 @@ def load_board(board, audio_folder):
             board[cell_id] = Cell(cell_id)
 
     for root, dirs, files in os.walk(audio_folder, topdown=True):
-        if len(files) > 0:
-            file_path = os.path.join(root, files[0])
-            parent_directory = os.path.basename(os.path.dirname(file_path))
-            print(f"Loaded existing file: {file_path}")
+        for file_name in files:
+            _, file_ext = os.path.splitext(file_name)
+            if file_ext.lower() == '.mp3':
+                file_path = os.path.join(root, files[0])
+                parent_directory = os.path.basename(os.path.dirname(file_path))
+                print(f"Loaded existing file: {file_path}")
 
-            board_cell_id = parent_directory.split('_')[0]
-            player_id = parent_directory.split('_')[1]
-            board[board_cell_id].add_audio(player_id, file_path, files[0])
+                board_cell_id = parent_directory.split('_')[0]
+                player_id = parent_directory.split('_')[1]
+                board[board_cell_id].add_audio(player_id, file_path, files[0])
+            else:
+                print(f"Skipped non-MP3 file: {file_name}")
