@@ -1,4 +1,5 @@
 # server
+Compiled executables available for both Mac and Windows can be found on the [releases page](https://github.com/storygrid/server/releases/).
 ## Setup
 Install all required packages via `requirements.txt`.
 
